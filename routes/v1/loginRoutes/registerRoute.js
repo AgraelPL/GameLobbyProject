@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
-
+const bcrypt = require('bcrypt');
 
 // Add reference to User mongoose schema
 const User = require('../../../schemas/User');
@@ -35,25 +35,36 @@ router.post("/",async (req,res,next)=>{
         })
         .catch((err)=>{
             console.log(err);
-            res.status(400).json({message:'error'});
+            res.status(401).render('register',{layout:'login-layout'})
         })
 
         if(user == null){
+
+            // Bcrypt hash password setup
+            let password = await bcrypt.hash(registerBody.password,10);
+
             // No user found 
-            // You can redirect to homepage
-            User.create(registerBody)
+            // You can create a new User and redirect to homePage
+            User.create({...registerBody,password:password})
             .then(user=>{
-                console.log(user);
+
+                // Store user data to session
+                // Its required to redirect to home page               
+                // look middleware/middleware
+                
+                req.session.user = user;
+                return res.redirect('/');
             })
-            res.status(200).render("login",{layout:'login-layout'});
+
         }
         else{
+
             // Send message to register page
             // If username => username is used
-            // Else emai => email is used            
+            // Else emai => email is used          
 
             console.log('Data is already used');
-            res.status(200).render('register',{layout:'login-layout'});
+            res.status(401).render('register',{layout:'login-layout'});
         }       
     }
 
