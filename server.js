@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('./config/database');
+
 
 //  Load middleware functions
 const middleware = require('./middleware/loggin_middleware'); // login middleware
@@ -12,8 +14,9 @@ const middleware = require('./middleware/loggin_middleware'); // login middlewar
 dotenv.config({path:'./config/config.env'});
 
 // Server config
-const app = express();
 const PORT = process.env.PORT || 5000;
+const app = express();
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`);
@@ -32,7 +35,7 @@ app.set('view engine', '.hbs');
 
 
 // Set api version
-const api = process.env.API;
+const api = process.env.ROUTES_API;
 
 // Routes setup
 const loginRoute = require(`./routes/${api}/loginRoutes/loginRoute`);
