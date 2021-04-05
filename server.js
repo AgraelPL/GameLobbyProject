@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('./config/database');
 const session = require('express-session');
+const io = require('socket.io');
 
 //  Load middleware functions
 const middleware = require('./middleware/loggin_middleware'); // login middleware
@@ -28,7 +29,6 @@ app.listen(PORT,()=>{
 if(process.env.NODE_ENV ==='development'){
     app.use(morgan('dev'));
 }
-
 
 
 // Set the view engine to handlebars
